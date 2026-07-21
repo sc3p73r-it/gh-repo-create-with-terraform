@@ -5,11 +5,8 @@ This Terraform project automates the creation of multiple repositories inside a 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [Terraform Workspaces (Multi-Environment)](#terraform-workspaces-multi-environment)
-- [Troubleshooting](#troubleshooting)
-- [Cleanup](#cleanup)
+- [Execution Instructions](#execution-instructions)
+
 
 ---
 
