@@ -5,7 +5,3 @@ resource "github_repository" "bulk_repos" {
   description = "Repository: ${each.key}"
   visibility  = "private"           # Change to "public" if needed
 }
-
-output "created_repos" {
-  value = [for repo in github_repository.bulk_repos : repo.name]
-}

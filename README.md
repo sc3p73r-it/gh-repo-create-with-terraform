@@ -5,8 +5,8 @@ This Terraform project automates the creation of multiple repositories inside a 
 ## Table of Contents
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
+- [Complete Configuration Files](#config-file)
 - [Execution Instructions](#execution-instructions)
-
 
 ---
 
@@ -29,11 +29,98 @@ Before running this project, ensure you have the following:
 ```text
 .
 ├── providers.tf          # Terraform and GitHub provider configuration
+├── workspace.tf          # Terraform Workspace
 ├── variables.tf          # Input variable definitions
 ├── repository.tf         # Main resource block (creates the repositories)
 ├── outputs.tf            # Displays repository URLs after creation
 └── terraform.tfvars      # Your list of 100 custom repository names
 ```
+
+## Complete Configuration Files
+Copy and paste the following code blocks into their respective files.
+
+### File 1: `provider.tf`
+This configures Terraform to use the GitHub API and targets your specific organization.
+```hcl
+terraform {
+  required_providers {
+    github = {
+      source  = "integrations/github"
+      version = "6.13.0"
+    }
+  }
+}
+
+provider "github" {
+ owner = "vitaltechmyanmar"
+ token = var.github_token
+}
+```
+### File 2: `variables.tf`
+```hcl
+variable "repo_names" {
+  type        = list(string)
+}
+
+variable "github_token" {
+  type        = string
+  description = "GitHub Personal Access Token"
+  sensitive   = true
+}
+```
+### File 3: `terraform.tfvars`
+This is where you paste your 100 unique names.
+Replace the placeholders below with your actual list. Ensure every name is wrapped in double quotes and followed by a comma.
+```hcl
+repo_names = [
+  "devops-learn",
+  "laravel-codedeploy",
+  "php-fpm",
+  "k8s-iac",
+  "terraform-with-aws",
+  "react-dashboard",
+  "nodejs-microservice",
+  # ------------------------------------------------------------------
+  # ⚠️ IMPORTANT: Add your remaining 93+ names here, one per line.
+  # Example:
+  # "python-flask-api",
+  # "java-spring-boot",
+  # "go-grpc-server",
+  # ------------------------------------------------------------------
+]
+github_token = ""
+```
+### File 4: `repository.tf`
+This file uses the `for_each` meta-argument to loop through your 100 names and create a GitHub repository for each one.
+```hcl
+resource "github_repository" "bulk_repos" {
+  for_each = toset(var.repo_names) # Converts your list into a unique set
+
+  name        = each.key            # each.key will be "devops-learn", "php-fpm", etc.
+  description = "Repository: ${each.key}"
+  visibility  = "private"           # Change to "public" if needed
+}
+
+output "created_repos" {
+  value = [for repo in github_repository.bulk_repos : repo.name]
+}
+```
+### File 5: `outputs.tf`
+This allows you to easily view all 100 repository URLs after the creation is complete.
+```hcl
+output "created_repos" {
+  description = "List of all created repository names"
+  value       = [for repo in github_repository.bulk_repos : repo.name]
+}
+
+output "repository_urls" {
+  description = "Map of repository names to their GitHub URLs"
+  value = {
+    for name, repo in github_repository.bulk_repos : name => repo.html_url
+  }
+}
+```
+
 
 ## Execution Instructions
 ```bash
