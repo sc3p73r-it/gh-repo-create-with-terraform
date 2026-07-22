@@ -20,7 +20,7 @@ Before running this project, ensure you have the following:
     - `admin:org` (Full control of organizations and teams).
     - `delete_repo` (Required if you plan to destroy resources).
 3.  **Organization Admin Rights**: Your GitHub user **must** be an **Owner** (Admin) of the `vitaltechmyanmar` organization.
-4.  **SAML SSO Authorization** (Critical): If your organization uses SAML Single Sign-On, you **must** authorize your token for the organization before running Terraform (see [Troubleshooting](#troubleshooting)).
+
 
 ---
 
